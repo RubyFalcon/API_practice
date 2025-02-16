@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      img {
+        display: block;
+        margin: 10vh auto;
+      }
+
+      button {
+        display: block;
+        margin: 0 auto;
+        border: none;
+        padding: 1 0.5rem;
+        border-radius: 0.5rem;
+        font-size: 1.2rem;
+        background-color: blueviolet;
+        color: white;
+      }
+      input {
+        display: block;
+        margin: 1rem auto;
+        padding: 1 0.5rem;
+        border-radius: 0.5rem;
+        font-size: 1.2rem;
+      }
+
+      button:hover {
+        background-color: rgb(171, 84, 253);
+      }
+    </style>
+  </head>
+  <body>
+    <img src="#" />
+    <form action="" novalidate>
+      <input
+        type="text"
+        name=""
+        id="search-bar"
+        placeholder="search for a gif"
+      />
+      <button type="submit" id="search-btn">Submit</button>
+    </form>
+    <button id="change-img-btn">Change image</button>
+    <script>
+      const img = document.querySelector("img");
+      const searchBtn = document.getElementById("search-btn");
+      const searchBar = document.getElementById("search-bar");
+      const url =
+        "https://api.giphy.com/v1/gifs/translate?api_key=zhFcfg68C1dJYoiOMz4H8Lw3yVWS5tb9&s=cats";
+      const changeImg = document.getElementById("change-img-btn");
+      const fetchImg = (url) =>
+        fetch(url, { mode: "cors" })
+          .then((response) => response.json())
+          .then((response) => (img.src = response.data.images.original.url))
+          .catch((err) => console.log(err));
+
+      fetchImg(url);
+      changeImg.addEventListener("click", () => fetchImg(url));
+      //
+      searchBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        fetch(
+          `https://api.giphy.com/v1/gifs/search?api_key=zhFcfg68C1dJYoiOMz4H8Lw3yVWS5tb9&q=${searchBar.value}&limit=1`,
+          { mode: "cors" }
+        ).then((response) =>
+          response
+            .json()
+            .then(
+              (response) => (img.src = response.data[0].images.original.url)
+            )
+        );
+      });
+    </script>
+  </body>
+</html>
