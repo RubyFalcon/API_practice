@@ -53,32 +53,42 @@
       const img = document.querySelector("img");
       const searchBtn = document.getElementById("search-btn");
       const searchBar = document.getElementById("search-bar");
-      const url =
-        "https://api.giphy.com/v1/gifs/translate?api_key=zhFcfg68C1dJYoiOMz4H8Lw3yVWS5tb9&s=cats";
       const changeImg = document.getElementById("change-img-btn");
-      const fetchImg = (url) =>
-        fetch(url, { mode: "cors" })
-          .then((response) => response.json())
-          .then((response) => (img.src = response.data.images.original.url))
-          .catch((err) => console.log(err));
 
-      fetchImg(url);
-      changeImg.addEventListener("click", () => fetchImg(url));
+      const getCats = async () => {
+        try {
+          const response = await fetch(
+            "https://api.giphy.com/v1/gifs/translate?api_key=zhFcfg68C1dJYoiOMz4H8Lw3yVWS5tb9&s=cats",
+            { mode: "cors" }
+          );
+          const catData = await response.json();
+          img.src = catData.data.images.original.url;
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      const getGif = async (searchData) => {
+        try {
+          const response = await fetch(
+            `https://api.giphy.com/v1/gifs/search?api_key=zhFcfg68C1dJYoiOMz4H8Lw3yVWS5tb9&q=${searchData}&limit=1`,
+            { mode: "cors" }
+          );
+          const data = await response.json();
+
+          img.src = data.data[0].images.original.url;
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      changeImg.addEventListener("click", () => getCats());
       //
       searchBtn.addEventListener("click", (e) => {
         e.preventDefault();
-
-        fetch(
-          `https://api.giphy.com/v1/gifs/search?api_key=zhFcfg68C1dJYoiOMz4H8Lw3yVWS5tb9&q=${searchBar.value}&limit=1`,
-          { mode: "cors" }
-        ).then((response) =>
-          response
-            .json()
-            .then(
-              (response) => (img.src = response.data[0].images.original.url)
-            )
-        );
+        getGif(searchBar.value);
       });
+      getCats();
     </script>
   </body>
 </html>
